@@ -1,0 +1,12 @@
+{
+  "name": "certigo-project",
+  "private": true,
+  "type": "module",
+  "description": "Локальный аналитический пакет CertiGo",
+  "scripts": {
+    "check": "node check.mjs"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}
