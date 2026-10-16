@@ -14,21 +14,45 @@ const SUB = path.join(KIT, 'submission');
 const PASS_SCORE = 60;
 const TMP_DB = 'certigo_check_tmp';
 
-// Контрольные сигнатуры не содержат готовых запросов и значений.
+// Контрольные хеши без готовых запросов и значений ответов.
+// BEGIN GENERATED SIGNATURES
+const EXPECTED_INPUTS = {
+  "schema.sql": "1fe2e5cbd05095b80603b429eddc859f0ce96084ee66ee5c6336cf41b75bfe66",
+  "seed.sql": "0ea6ff9ea63117bf28431b313a0c4266a840d3f75581b362d5f8e1b0e103bfee",
+  "data-rules.md": "02a0b5877efc3c657afccb94acd36724ed910cca039ac35a15891fcbb9c954e9",
+  "ab-brief.md": "f6c530e1225865f87e3ce93c4642511a9d0f6d6541791fc18eb0731bdd15db55"
+};
+
 const EXPECTED_SQL = {
-  channels: { columns: 2, digest: '2262b073483f32dea1f45348b6eef8415d4fcae5aa3675110e25cacaa5c1d99e' },
-  funnel: { columns: 10, digest: '7819a018193d4b21ce0618510842094b95749c2df4536840abf1972b2aa4e010' },
-  ab_primary: { columns: 4, digest: '8df312de85e2c7457d08de9db9ef3cd2930f8f09c0653dff408fdb3af3a0037a' },
-  ab_guardrail: { columns: 5, digest: '64d6d7e2592200834fe476d0ee690e7745d8d9e993f9e00e79f8e732391600bb' },
-  economics: { columns: 8, digest: '088a4094a202c05f60e1d72df8135042ec8954424cd6b849a43470856ba139ee' },
+  "channels": {
+    "columns": 2,
+    "digest": "6579f16af906e8d9502a11b0ab6b281ab173ac2211d49685e109422269dbf415"
+  },
+  "funnel": {
+    "columns": 10,
+    "digest": "7819a018193d4b21ce0618510842094b95749c2df4536840abf1972b2aa4e010"
+  },
+  "ab_primary": {
+    "columns": 4,
+    "digest": "7690400f77a6d2c965672c552c0699a31bb06c1103828282d9318f7b70d07b32"
+  },
+  "ab_guardrail": {
+    "columns": 5,
+    "digest": "d7484f1e888efd6d13ef3536d2f10063516a78fe856a3957ba2ee55440140937"
+  },
+  "economics": {
+    "columns": 8,
+    "digest": "05716567e59e2c456a0299943f77d22721b890d84b0d10c2d2b9b99f66e969ef"
+  }
 };
 
 const EXPECTED_EXPORTS = {
-  funnel: '36347cc38fd4e92ddac1f7417dee6f50a6a74275e0f0573b78df1501fbd8ace2',
-  ab_onboarding: '1d48e2c28443038c823bf7a5443a1bf0290d65d3803e02d4f78d24ce3d8a1427',
-  economics: '3d9cf74c8ec794a1873acce06877b4d7c1b468088d470b27bccba49af2f8b3d6',
-  revenue_weekly: 'af6246782f50c8e62aa66594640dc8edda9037419fae1c88c1c8958e97bd5f41',
+  "funnel": "de041e6a0c41f10ac54f023c4019400eb511b329750027874d21900680e71a9d",
+  "ab_onboarding": "986493f05f19ed7e15154bbce1be1201d6c60a59367af8297f2f79d3cbfdc517",
+  "economics": "917f225a0a61c46492322ce80a1b19ac355acf0a7e02f39aa49de6d5627b8429",
+  "revenue_weekly": "17b286212319ba94277a1650e34d1532159e4a29b54cbea12bbae3742afda2f2"
 };
+// END GENERATED SIGNATURES
 
 const TASK_LABELS = {
   channels: 'SQL · новые пользователи по каналам',
@@ -63,6 +87,26 @@ function normRows(rows) {
 
 function digestRows(rows) {
   return createHash('sha256').update(normRows(rows).join('\n')).digest('hex');
+}
+
+function digestInput(text) {
+  return createHash('sha256').update(text.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n')).digest('hex');
+}
+
+function verifyInputs() {
+  for (const [name, expected] of Object.entries(EXPECTED_INPUTS)) {
+    if (digestInput(readFileSync(path.join(KIT, name), 'utf8')) !== expected) {
+      throw new Error('Исходный файл ' + name + ' изменился. Автору комплекта нужно пересчитать эталоны и повторить контрольную проверку.');
+    }
+  }
+}
+
+// Минимальная заполненность, а не оценка смысла и качества решения.
+function hasDocumentBody(text) {
+  const body = text.split('\n').map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#') && !/^\{.*\}$/.test(line)).join(' ');
+  const words = body.toLowerCase().match(/[\p{L}]{3,}/gu) || [];
+  return body.length >= 150 && new Set(words).size >= 10;
 }
 
 function isFiniteNumber(value) {
@@ -133,7 +177,7 @@ function reportSqlUnavailable(reason) {
 function readJson(file, displayPath) {
   if (!existsSync(file)) return { error: 'файл ' + displayPath + ' не найден' };
   try {
-    return { data: JSON.parse(readFileSync(file, 'utf8')) };
+    return { data: JSON.parse(readFileSync(file, 'utf8').replace(/^\uFEFF/, '')) };
   } catch {
     return { error: displayPath + ' — невалидный JSON' };
   }
@@ -169,9 +213,9 @@ function checkExports() {
           && stage.stage === expectedStages[index]
           && isFiniteNumber(stage.users));
       const valuesOk = structureOk
-        && digestRows(stages.map((stage) => [stage.users])) === EXPECTED_EXPORTS.funnel;
+        && digestRows(stages.map((stage) => [stage.stage, stage.users])) === EXPECTED_EXPORTS.funnel;
       report(label, valuesOk ? max : 0, max, valuesOk,
-        structureOk
+        valuesOk ? 'этапы и количества совпали с контрольными' : structureOk
           ? 'числа пользователей на этапах не совпали с воронкой'
           : 'нужен массив stages из пяти этапов с полями stage и users');
     }
@@ -200,7 +244,7 @@ function checkExports() {
           variant.payment_rate,
         ])) === EXPECTED_EXPORTS.ab_onboarding;
       report(label, valuesOk ? max : 0, max, valuesOk,
-        structureOk
+        valuesOk ? 'метрики вариантов совпали с контрольными' : structureOk
           ? 'метрики вариантов не совпали с A/B-проверками'
           : 'нужен массив variants для вариантов A и B с обязательными числовыми полями');
     }
@@ -229,7 +273,7 @@ function checkExports() {
           channel.romi,
         ])) === EXPECTED_EXPORTS.economics;
       report(label, valuesOk ? max : 0, max, valuesOk,
-        structureOk
+        valuesOk ? 'метрики каналов совпали с контрольными' : structureOk
           ? 'CAC, ARPU или ROMI не совпали с расчётом юнит-экономики'
           : 'нужен массив channels для двух платных каналов с CAC, ARPU и ROMI');
     }
@@ -250,7 +294,7 @@ function checkExports() {
       const valuesOk = structureOk
         && digestRows(weeks.map((week) => [week.week, week.revenue_rub])) === EXPECTED_EXPORTS.revenue_weekly;
       report(label, valuesOk ? max : 0, max, valuesOk,
-        structureOk
+        valuesOk ? 'выручка по неделям совпала с контрольной' : structureOk
           ? 'выручка по неделям не совпала с контрольным результатом'
           : 'нужен массив weeks с полями week и revenue_rub');
     }
@@ -266,6 +310,7 @@ function checkReleaseDecision() {
   }
 
   const text = readFileSync(file, 'utf8');
+  const hasContent = hasDocumentBody(text);
   const firstContentLine = text.replace(/^\uFEFF/, '').split('\n')
     .find((line) => line.trim()) || '';
   const notes = [];
@@ -283,11 +328,12 @@ function checkReleaseDecision() {
     ['решение по эксперименту', /решени[ея]\s+по\s+(?:эксперимент|onboarding)/i],
     ['решение по бюджету', /решени[ея]\s+по\s+(?:бюджет|канал)/i],
     ['ограничения', /ограничени/i],
-    ['следующая проверка', /следующ\w*\s+провер/i],
+    ['следующая проверка', /следующ[\p{L}]*\s+провер/iu],
     ['след применения ИИ', /след[\s\S]{0,40}(?:ии|ai)/i],
   ];
   const missing = sections.filter(([, pattern]) => !pattern.test(text)).map(([name]) => name);
-  points += 2 * (sections.length - missing.length);
+  points += hasContent ? 2 * (sections.length - missing.length) : 0;
+  if (!hasContent) notes.push('добавьте основной текст: минимум 150 символов и 10 разных слов; одних заголовков недостаточно');
   if (missing.length) notes.push('не найдены разделы: ' + missing.join(', '));
 
   const refs = new Set(
@@ -295,7 +341,7 @@ function checkReleaseDecision() {
       .map((match) => match[1].toLowerCase()),
   );
   if (/(CONTROL|data-rules|ab-brief)/i.test(text)) refs.add('docs');
-  if (refs.size >= 3) {
+  if (hasContent && refs.size >= 3) {
     points += 3;
   } else {
     notes.push('нужно добавить связи утверждений с источниками');
@@ -314,11 +360,7 @@ function checkNotes() {
   }
 
   const text = readFileSync(file, 'utf8').toLowerCase();
-  const body = text.split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith('#') && !/^\{.*\}$/.test(line))
-    .join(' ');
-  const hasContent = body.length >= 150;
+  const hasContent = hasDocumentBody(text);
   const fields = [
     ['вопрос решения', /вопрос/],
     ['критерий решения', /критери/],
@@ -326,10 +368,10 @@ function checkNotes() {
     ['сегмент', /сегмент/],
     ['ограничения', /ограничени/],
   ];
-  const missing = fields.filter(([, pattern]) => !pattern.test(body)).map(([name]) => name);
+  const missing = fields.filter(([, pattern]) => !pattern.test(text)).map(([name]) => name);
   const points = hasContent ? 2 * (fields.length - missing.length) : 0;
   const details = [];
-  if (!hasContent) details.push('файл не заполнен: добавьте содержательное описание');
+  if (!hasContent) details.push('добавьте основной текст: минимум 150 символов и 10 разных слов; одних заголовков недостаточно');
   if (hasContent && missing.length) details.push('не найдены элементы: ' + missing.join(', '));
 
   report(label, points, 10, points === 10,
@@ -359,6 +401,7 @@ function printResults(setupError) {
 
 async function main() {
   console.log('Проверка аналитического пакета CertiGo\n');
+  verifyInputs();
 
   let setupError = '';
   let connectionString = '';
