@@ -1,0 +1,645 @@
+:root {
+    --bg: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --blue: #2563eb;
+    --orange: #ea580c;
+    --red: #dc2626;
+    --green: #059669;
+    --radius: 8px;
+    --gap: 16px;
+}
+
+/* Иконки (псевдоэлементы для легковесности) */
+.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+    margin-right: 0.25em;
+}
+.icon--check::before { content: '✓'; color: var(--green); font-weight: bold; }
+.icon--clock::before { content: '🕒'; }
+.icon--alert::before { content: '⚠️'; }
+.icon--info::before { content: 'ℹ️'; color: var(--blue); }
+.icon--block::before { content: '🚫'; color: var(--red); }
+.icon--close::before { content: '✕'; }
+
+/* Глобальные сбросы */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+}
+
+/* Верхняя панель */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px var(--gap);
+    border-bottom: 1px solid var(--border);
+    background: #f9fafb;
+}
+
+.header__title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.header__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-size: 0.8125rem;
+    color: var(--muted);
+    flex-wrap: wrap;
+}
+
+.header__state {
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.header__state--risk {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Первый экран */
+.hero {
+    text-align: center;
+    padding: 24px var(--gap) 20px;
+}
+
+.hero__title {
+    margin: 0 0 8px;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.hero__subtitle {
+    margin: 0 0 16px;
+    color: var(--muted);
+    font-size: 0.9375rem;
+}
+
+.hero__actions {
+    text-align: center;
+}
+
+/* Кнопки */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border: 1px solid var(--blue);
+    border-radius: var(--radius);
+    background: var(--blue);
+    color: #fff;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.btn:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+/* Синяя активная кнопка */
+.btn--active {
+    background: #1d4ed8;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+/* Красная кнопка для режима рисков */
+.btn--warning {
+    background: var(--red);
+    border-color: var(--red);
+}
+.btn--warning:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+}
+.btn--warning.btn--active {
+    background: #b91c1c;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.3);
+}
+
+/* Красная кнопка "Сбросить фильтр" */
+.btn--danger {
+    background: var(--red);
+    border-color: var(--red);
+}
+.btn--danger:hover {
+    background: #b91c1c;
+    border-color: #b91c1c;
+}
+.btn--danger:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+}
+
+/* Текстовая кнопка (например, "Сбросить") */
+.btn--text {
+    background: transparent;
+    border: none;
+    color: var(--blue);
+    padding: 0;
+}
+.btn--text:hover {
+    text-decoration: underline;
+    background: transparent;
+}
+
+/* Сводка */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    padding: 0 var(--gap) 24px;
+}
+
+.summary__item {
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.summary__label {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    margin-bottom: 2px;
+}
+
+.summary__value {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.summary__item--progress {
+    position: relative;
+    padding-top: 36px;
+}
+.summary__progress {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.summary__progress-bar {
+    height: 100%;
+    background: var(--blue);
+    border-radius: 3px;
+}
+
+/* Цели спринта */
+.goals {
+    padding: 0 var(--gap) 24px;
+}
+
+.section-title {
+    margin: 0 0 12px;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.goals__list {
+    margin: 0;
+    padding-left: 16px;
+}
+.goals__item {
+    margin-bottom: 6px;
+    font-size: 0.9375rem;
+}
+
+/* Фильтры задач */
+.tasks-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--gap) 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    background: #f9fafb;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.filter-btn:hover {
+    background: #fff;
+    border-color: var(--blue);
+}
+.filter-btn--active {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+}
+
+/* Задачи */
+.tasks {
+    padding: 0 var(--gap) 24px;
+}
+
+/* Таблица задач */
+.tasks__table {
+    display: grid;
+    gap: 8px;
+}
+
+.tasks__row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.tasks__row:hover {
+    background: #f9fafb;
+    border-color: var(--blue);
+}
+.tasks__row:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: -2px;
+}
+
+/* Выделенные заблокированные задачи */
+.task-row--blocked {
+    border-color: var(--red);
+    background: #fef2f2;
+}
+.task-row--highlight {
+    box-shadow: 0 0 0 2px var(--red);
+}
+
+/* Заголовок таблицы */
+.tasks__row--header {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    background: transparent;
+    border: none;
+    padding-bottom: 12px;
+}
+
+/* Вертикальные разделители для сканируемости */
+.tasks__row:not(:last-child) .tasks__cell--task,
+.tasks__row:not(:last-child) .tasks__cell--owner {
+    border-right: 1px solid var(--border);
+    padding-right: var(--gap);
+}
+
+.tasks__cell {
+    font-size: 0.875rem;
+}
+.tasks__cell--task {
+    font-weight: 500;
+}
+
+/* Статусы */
+.status {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.status--done {
+    background: #d1fae5;
+    color: var(--green);
+}
+.status--in-progress {
+    background: #bfdbfe;
+    color: var(--blue);
+}
+.status--blocked {
+    background: #fee2e2;
+    color: var(--red);
+}
+
+/* Риски */
+.risk {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.risk--low {
+    background: #dbeafe;
+    color: var(--blue);
+}
+.risk--medium {
+    background: #fef3c7;
+    color: var(--orange);
+}
+.risk--high {
+    background: #fee2e2;
+    color: var(--red);
+}
+
+/* Зоны риска */
+.risk-zones {
+    padding: 24px var(--gap) 32px;
+    border-top: 1px solid var(--border);
+}
+
+.risk-zones__summary {
+    margin-bottom: 16px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.risk-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    padding: 12px;
+    border-radius: var(--radius);
+    margin-bottom: var(--gap);
+}
+
+.risk-card__title {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.risk-card__desc {
+    margin: 0 0 8px;
+    color: var(--text);
+    font-size: 0.875rem;
+}
+
+.risk-card__meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: var(--muted);
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Модальное окно */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+[aria-hidden="false"] {
+    visibility: visible;
+    opacity: 1;
+}
+.modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+.modal__content {
+    position: relative;
+    background: #fff;
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    outline: none;
+    padding: 24px;
+}
+.modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 4px;
+    border-radius: 4px;
+}
+.modal__close:hover {
+    background: #f9fafb;
+    color: var(--text);
+}
+.modal__title {
+    margin: 0 0 16px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+.modal__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+    margin-bottom: 16px;
+}
+.modal__divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    :root {
+        --gap: 12px;
+    }
+
+    body {
+        font-size: 0.9375rem;
+    }
+
+    .header {
+        padding: 10px var(--gap);
+    }
+    .header__title {
+        font-size: 1rem;
+    }
+    .header__meta {
+        gap: 6px;
+        font-size: 0.8125rem;
+    }
+    .header__state {
+        font-size: 0.7rem;
+    }
+
+    .hero {
+        padding: 24px var(--gap) 20px;
+    }
+    .hero__title {
+        font-size: 1.25rem;
+        margin-bottom: 4px;
+    }
+    .hero__subtitle {
+        margin-bottom: 16px;
+        font-size: 0.9375rem;
+    }
+    .btn {
+        padding: 8px 16px;
+        font-size: 0.9375rem;
+    }
+
+    .summary {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding-bottom: 24px;
+    }
+    .summary__item {
+        padding: 12px;
+    }
+    .summary__label {
+        font-size: 0.8125rem;
+        margin-bottom: 2px;
+    }
+    .summary__value {
+        font-size: 1.125rem;
+    }
+    .summary__item--progress {
+        padding-top: 36px;
+    }
+    .summary__progress {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        height: 5px;
+    }
+
+    .goals {
+        padding-bottom: 24px;
+    }
+    .section-title {
+        font-size: 1.125rem;
+    }
+    .goals__item {
+        font-size: 0.9375rem;
+    }
+
+    .tasks-filters {
+        flex-direction: column;
+        align-items: stretch;
+        padding-bottom: 8px;
+    }
+    .filter-group {
+        justify-content: center;
+    }
+    .filter-btn {
+        font-size: 0.875rem;
+    }
+
+    .tasks {
+        padding-bottom: 24px;
+    }
+    .tasks__row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 12px;
+        text-align: left;
+    }
+    .tasks__row:not(:last-child) .tasks__cell--task,
+    .tasks__row:not(:last-child) .tasks__cell--owner {
+        border-right: none;
+        padding-right: 0;
+    }
+    .tasks__row--header {
+        display: none;
+    }
+    .tasks__cell {
+        font-size: 0.875rem;
+        padding: 4px 0;
+        position: relative;
+    }
+    .tasks__cell::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 2px;
+    }
+    .tasks__cell--task::before { content: "Задача"; }
+    .tasks__cell--owner::before { content: "Ответственный"; }
+    .tasks__cell--status::before { content: "Статус"; }
+    .tasks__cell--deadline::before { content: "Срок"; }
+    .tasks__cell--risk::before { content: "Риск"; }
+
+    .status, .risk {
+        padding: 2px 6px;
+        font-size: 0.6875rem;
+    }
+
+    .risk-zones {
+        padding: 24px var(--gap) 24px;
+    }
+    .risk-card {
+        padding: 12px;
+    }
+    .risk-card__title {
+        font-size: 1rem;
+    }
+    .risk-card__desc {
+        font-size: 0.875rem;
+    }
+    .risk-card__meta {
+        font-size: 0.8125rem;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .modal__content {
+        padding: 20px;
+    }
+    .modal__title {
+        font-size: 1.25rem;
+    }
+    .modal__grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}

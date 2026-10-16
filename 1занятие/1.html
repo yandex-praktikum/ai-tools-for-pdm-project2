@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пульс спринта — Northstar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header__title">Northstar</div>
+        <div class="header__meta">
+            <span class="header__sprint">Sprint 24</span>
+            <span class="header__dates">12–23 августа</span>
+            <span class="header__state header__state--risk">Есть риски</span>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <h1 class="hero__title">Пульс спринта</h1>
+            <p class="hero__subtitle">Короткая сводка перед контрольной точкой</p>
+            <div class="hero__actions">
+                <button id="showRisksBtn" class="btn btn--primary btn--icon">
+                    <span class="icon icon--alert"></span> Показать риски
+                </button>
+                <button id="resetRisksBtn" class="btn btn--danger btn--icon" style="display: none;">
+                    <span class="icon icon--close"></span> Сбросить фильтр
+                </button>
+            </div>
+        </section>
+
+        <section class="summary">
+            <div class="summary__item">
+                <div class="summary__label">Выполнено</div>
+                <div class="summary__value">12 из 18 задач</div>
+            </div>
+            <div class="summary__item">
+                <div class="summary__label">В работе</div>
+                <div class="summary__value">4 задачи</div>
+            </div>
+            <div class="summary__item">
+                <div class="summary__label">Заблокировано</div>
+                <div class="summary__value">2 задачи</div>
+            </div>
+            <div class="summary__item summary__item--progress">
+                <div class="summary__label">Прогресс</div>
+                <div class="summary__progress">
+                    <div class="summary__progress-bar" style="width: 67%;"></div>
+                </div>
+                <div class="summary__value">67%</div>
+            </div>
+        </section>
+
+        <section class="goals">
+            <h2 class="section-title">Цели спринта</h2>
+            <ul class="goals__list">
+                <li class="goals__item">Завершить новый онбординг</li>
+                <li class="goals__item">Подготовить аналитику активации</li>
+                <li class="goals__item">Исправить критические ошибки авторизации</li>
+            </ul>
+        </section>
+
+        <!-- Фильтры задач -->
+        <section class="tasks-filters">
+            <div class="filter-group">
+                <button class="filter-btn filter-btn--active" data-filter="all" id="filterAll">Все задачи</button>
+                <button class="filter-btn" data-filter="in-progress" id="filterInProgress">В работе</button>
+                <button class="filter-btn" data-filter="blocked" id="filterBlocked">Заблокированные</button>
+                <button class="filter-btn" data-filter="high-risk" id="filterHighRisk">Только высокий риск</button>
+            </div>
+            
+        </section>
+
+        <section class="tasks">
+            <h2 class="section-title">Задачи</h2>
+            <div class="tasks__table">
+                <div class="tasks__row tasks__row--header">
+                    <div class="tasks__cell tasks__cell--task">Задача</div>
+                    <div class="tasks__cell tasks__cell--owner">Ответственный</div>
+                    <div class="tasks__cell tasks__cell--status">Статус</div>
+                    <div class="tasks__cell tasks__cell--deadline">Срок</div>
+                    <div class="tasks__cell tasks__cell--risk">Риск</div>
+                </div>
+
+                <!-- Синтетические данные с атрибутами для фильтрации и модалки -->
+                <div class="tasks__row" 
+                     data-status="done" 
+                     data-risk="low" 
+                     data-id="1">
+                    <div class="tasks__cell tasks__cell--task">Экран приветствия</div>
+                    <div class="tasks__cell tasks__cell--owner">Анна</div>
+                    <div class="tasks__cell tasks__cell--status"><span class="status status--done"><span class="icon icon--check"></span> Готово</span></div>
+                    <div class="tasks__cell tasks__cell--deadline">16 августа</div>
+                    <div class="tasks__cell tasks__cell--risk"><span class="risk risk--low"><span class="icon icon--info"></span> Низкий</span></div>
+                </div>
+                <div class="tasks__row" 
+                     data-status="in-progress" 
+                     data-risk="medium" 
+                     data-id="2">
+                    <div class="tasks__cell tasks__cell--task">События активации</div>
+                    <div class="tasks__cell tasks__cell--owner">Максим</div>
+                    <div class="tasks__cell tasks__cell--status"><span class="status status--in-progress"><span class="icon icon--clock"></span> В работе</span></div>
+                    <div class="tasks__cell tasks__cell--deadline">20 августа</div>
+                    <div class="tasks__cell tasks__cell--risk"><span class="risk risk--medium"><span class="icon icon--alert"></span> Средний</span></div>
+                </div>
+                <div class="tasks__row task-row--blocked" 
+                     data-status="blocked" 
+                     data-risk="high" 
+                     data-id="3">
+                    <div class="tasks__cell tasks__cell--task">Проверка email</div>
+                    <div class="tasks__cell tasks__cell--owner">Ирина</div>
+                    <div class="tasks__cell tasks__cell--status"><span class="status status--blocked"><span class="icon icon--block"></span> Заблокировано</span></div>
+                    <div class="tasks__cell tasks__cell--deadline">18 августа</div>
+                    <div class="tasks__cell tasks__cell--risk"><span class="risk risk--high"><span class="icon icon--block"></span> Высокий</span></div>
+                </div>
+                <div class="tasks__row" 
+                     data-status="in-progress" 
+                     data-risk="medium" 
+                     data-id="4">
+                    <div class="tasks__cell tasks__cell--task">Мобильная адаптация</div>
+                    <div class="tasks__cell tasks__cell--owner">Олег</div>
+                    <div class="tasks__cell tasks__cell--status"><span class="status status--in-progress"><span class="icon icon--clock"></span> В работе</span></div>
+                    <div class="tasks__cell tasks__cell--deadline">21 августа</div>
+                    <div class="tasks__cell tasks__cell--risk"><span class="risk risk--medium"><span class="icon icon--alert"></span> Средний</span></div>
+                </div>
+                <div class="tasks__row task-row--blocked" 
+                     data-status="blocked" 
+                     data-risk="high" 
+                     data-id="5">
+                    <div class="tasks__cell tasks__cell--task">Тестирование сценария входа</div>
+                    <div class="tasks__cell tasks__cell--owner">Ирина</div>
+                    <div class="tasks__cell tasks__cell--status"><span class="status status--blocked"><span class="icon icon--block"></span> Заблокировано</span></div>
+                    <div class="tasks__cell tasks__cell--deadline">19 августа</div>
+                    <div class="tasks__cell tasks__cell--risk"><span class="risk risk--high"><span class="icon icon--block"></span> Высокий</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Модальное окно -->
+        <div id="taskModal" class="modal" aria-hidden="true">
+            <div class="modal__overlay" tabindex="-1" data-close="modal"></div>
+            <div class="modal__content" role="dialog" aria-modal="true">
+                <button class="modal__close" aria-label="Закрыть" data-close="modal">
+                    <span class="icon icon--close"></span>
+                </button>
+                <div class="modal__body" id="modalBody">
+                    <!-- Сюда вставляется контент задачи -->
+                </div>
+            </div>
+        </div>
+
+        <section class="risk-zones" id="risk-zones">
+            <h2 class="section-title">Зоны риска</h2>
+            <div class="risk-zones__summary">
+                Два блокера требуют внимания до конца спринта
+            </div>
+            <div class="risk-card">
+                <h3 class="risk-card__title">Проверка email</h3>
+                <p class="risk-card__desc">Зависит от настройки тестового SMTP-шлюза. Почта не уходит из стейджинга.</p>
+                <div class="risk-card__meta">
+                    <span><strong>Ответственный:</strong> Ирина</span>
+                    <span><strong>Ближайшее действие:</strong> Поднять мок-сервер к 14:00</span>
+                </div>
+            </div>
+            <div class="risk-card">
+                <h3 class="risk-card__title">Тестирование сценария входа</h3>
+                <p class="risk-card__desc">Не хватает тестовых данных для 2FA. Тесты падают на шаге подтверждения.</p>
+                <div class="risk-card__meta">
+                    <span><strong>Ответственный:</strong> Ирина</span>
+                    <span><strong>Ближайшее действие:</strong> Запросить сэмплы у бэкенда</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+   <script>
+    // Данные для модального окна (синтетические описания)
+    const taskDetails = {
+        1: { problem: 'Проблем нет, задача завершена.', action: 'Архивировать в конце спринта.' },
+        2: { problem: 'Сложность с агрегацией событий из-за кэширования.', action: 'Отключить кэш на стейджинге для теста.' },
+        3: { problem: 'Зависит от настройки тестового SMTP-шлюза. Почта не уходит из стейджинга.', action: 'Поднять мок-сервер к 14:00.' },
+        4: { problem: 'Краш на старых версиях Android при повороте экрана.', action: 'Зафиксировать ориентацию в проблемном компоненте.' },
+        5: { problem: 'Не хватает тестовых данных для 2FA. Тесты падают на шаге подтверждения.', action: 'Запросить сэмплы у бэкенда.' }
+    };
+
+    const showRisksBtn = document.getElementById('showRisksBtn');
+    const resetRisksBtn = document.getElementById('resetRisksBtn');
+    const riskZones = document.getElementById('risk-zones');
+    const taskRows = document.querySelectorAll('.tasks__row:not(.tasks__row--header)');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const modal = document.getElementById('taskModal');
+    const modalBody = document.getElementById('modalBody');
+
+    let currentFilter = 'all';
+
+    // Функция переключения цвета и состояния кнопки "Показать риски"
+    function updateShowRisksButtonState(filter) {
+        // Снимаем все цветовые классы перед установкой нового
+        showRisksBtn.classList.remove('btn--warning', 'btn--primary');
+
+        // Если включен фильтр высокого риска или заблокированных — кнопка красная и активная
+        if (filter === 'high-risk' || filter === 'blocked') {
+            showRisksBtn.classList.add('btn--warning', 'btn--active');
+        } else {
+            // В остальных случаях — синяя
+            showRisksBtn.classList.add('btn--primary');
+            // Если это фильтр "Все задачи", убираем активное состояние
+            if (filter === 'all') {
+                showRisksBtn.classList.remove('btn--active');
+            }
+        }
+    }
+
+    // 1. Кнопка "Показать риски" (Главный сценарий)
+    showRisksBtn.addEventListener('click', () => {
+        currentFilter = 'high-risk';
+        applyFilter(currentFilter);
+        riskZones.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        updateShowRisksButtonState(currentFilter); // Обновляем состояние кнопки
+        resetRisksBtn.style.display = 'inline-flex';
+    });
+
+    // Кнопка "Сбросить фильтр"
+    resetRisksBtn.addEventListener('click', () => {
+        currentFilter = 'all';
+        applyFilter(currentFilter);
+        updateShowRisksButtonState(currentFilter); // Переключаем цвет обратно на синий
+        resetRisksBtn.style.display = 'none';
+    });
+
+    // 2. Переключатель фильтров
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelector('.filter-btn--active').classList.remove('filter-btn--active');
+            btn.classList.add('filter-btn--active');
+            currentFilter = btn.dataset.filter;
+            applyFilter(currentFilter);
+            updateShowRisksButtonState(currentFilter); // Переключаем цвет при смене любого фильтра
+        });
+    });
+
+    function applyFilter(filter) {
+        const isRiskMode = filter === 'high-risk' || filter === 'blocked';
+        taskRows.forEach(row => {
+            const status = row.dataset.status;
+            const risk = row.dataset.risk;
+            let show = false;
+
+            switch(filter) {
+                case 'all': show = true; break;
+                case 'in-progress': show = status === 'in-progress'; break;
+                case 'blocked': show = status === 'blocked'; break;
+                case 'high-risk': show = risk === 'high' || status === 'blocked'; break;
+            }
+            row.style.display = show ? '' : 'none';
+            row.classList.toggle('task-row--highlight', isRiskMode);
+        });
+    }
+
+    // 3. Интерактивность строк и модальное окно
+    taskRows.forEach(row => {
+        row.addEventListener('click', () => {
+            const id = row.dataset.id;
+            const title = row.querySelector('.tasks__cell--task').textContent;
+            const owner = row.querySelector('.tasks__cell--owner').textContent;
+            const statusEl = row.querySelector('.status');
+            const riskEl = row.querySelector('.risk');
+            const deadline = row.querySelector('.tasks__cell--deadline').textContent;
+
+            const statusText = statusEl.textContent.trim();
+            const riskText = riskEl.textContent.trim();
+
+            const details = taskDetails[id];
+
+            modalBody.innerHTML = `
+                <h3 class="modal__title">${title}</h3>
+                <div class="modal__grid">
+                    <div><strong>Статус:</strong> <span class="status ${statusEl.classList[1]}">${statusText}</span></div>
+                    <div><strong>Риск:</strong> <span class="risk ${riskEl.classList[1]}">${riskText}</span></div>
+                    <div><strong>Ответственный:</strong> ${owner}</div>
+                    <div><strong>Срок:</strong> ${deadline}</div>
+                </div>
+                ${details ? `
+                    <div class="modal__divider"></div>
+                    <div><strong>Описание проблемы:</strong></div>
+                    <p>${details.problem}</p>
+                    <div><strong>Ближайшее действие:</strong></div>
+                    <p>${details.action}</p>
+                ` : ''}
+            `;
+            modal.setAttribute('aria-hidden', 'false');
+            modal.querySelector('.modal__content').focus();
+        });
+    });
+
+    // Закрытие модалки
+    modal.addEventListener('click', (e) => {
+        if (e.target.dataset.close === 'modal' || e.target === modal) {
+            modal.setAttribute('aria-hidden', 'true');
+        }
+    });
+    modal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            modal.setAttribute('aria-hidden', 'true');
+        }
+    });
+</script>
+</body>
+</html>
